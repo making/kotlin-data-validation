@@ -13,10 +13,10 @@ import javax.validation.Valid
 @RestController
 class Controller {
     @PutMapping("/user/java")
-    fun putUser(@RequestBody @Valid javaUser: JavaUser): Mono<ResponseEntity<String>> =
-        Mono.just(ResponseEntity("shouldn't get this", HttpStatus.OK))
+    fun putUser(@RequestBody javaUser: JavaUser) = Mono.just(javaUser.validate()
+            .fold({ ResponseEntity(mapOf("details" to it.details()), HttpStatus.BAD_REQUEST) }, { ResponseEntity("shouldn't get this", HttpStatus.OK) }))
 
     @PutMapping("/user/kotlin")
-    fun putUser(@RequestBody @Valid kotlinUser: KotlinUser): Mono<ResponseEntity<String>> =
-        Mono.just(ResponseEntity("shouldn't get this", HttpStatus.OK))
+    fun putUser(@RequestBody @Valid kotlinUser: KotlinUser) = Mono.just(kotlinUser.validate()
+            .fold({ ResponseEntity(mapOf("details" to it.details()), HttpStatus.BAD_REQUEST) }, { ResponseEntity("shouldn't get this", HttpStatus.OK) }))
 }
